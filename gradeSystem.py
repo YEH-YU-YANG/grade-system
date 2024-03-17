@@ -58,18 +58,17 @@ class ScoreSystem:
         
         Running Example:
         >>> object.show_score()
-        
-            Please enter student id: 12345
-            Student's scores:
-            +--------------+-------+
-            |    Subject   | Score |
-            +--------------+-------+
-            |     Lab 1    |   90   |
-            |     Lab 2    |   85   |
-            |     Lab 3    |   92   |
-            |   Mid-Term   |   88   |
-            |  Final Exam  |   95   |
-            +--------------+-------+
+        Please enter student id: 12345
+        Student's scores:
+        +--------------+-------+
+        |    Subject   | Score |
+        +--------------+-------+
+        |     Lab 1    |   90   |
+        |     Lab 2    |   85   |
+        |     Lab 3    |   92   |
+        |   Mid-Term   |   88   |
+        |  Final Exam  |   95   |
+        +--------------+-------+
         """
         
         user_input = input("Please enter student id: ")
@@ -268,7 +267,25 @@ class ScoreSystem:
         
         Running Example:
         """
-
+    def print_weights(self,prefix_str):
+        """
+        print the message of prefix_str and value of weights
+        
+        :param : prefix_str
+        :type : str
+        
+        :return: None
+        :rtype: None
+        
+        Running Example:
+        >>>> object.print_weights('Old weights')
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+             
+        >>>> object.print_weights('New weights')
+        New weights: : lab1 0.2 lab2 0.1 lab3 0.5 mid_term 0.3 final_exam 0.33
+        """
+        print(f'{prefix_str}:', end=' ')
+        print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
     
     def update_weights(self):
         """
@@ -283,7 +300,26 @@ class ScoreSystem:
         
         Running Example:
         """
+        self.print_weights('Old weights: ')            
+        # final_exam 33 lab1 20% lab2 10 lab3 0.5
+        # lab2 10 final_exam 0.33 lab1 20% lab3 0.5
+        # lab1 20% lab2 70 lab3 0.5 final_exam 0.33
+        user_input = input("Please enter new weights: ")
+        new_weights_list = user_input.split()
+        for i in range(0, len(new_weights_list), 2):
+            test = new_weights_list[i]
+            weight = new_weights_list[i+1]
+            if '%' in weight:
+                weight = float(weight.strip('%')) / 100
+            elif 1 <= float(weight) and float(weight) <=100:
+                weight = float(weight) / 100
+            else:
+                weight = float(weight)
                 
+            self.weights[test] = weight
+        
+        self.print_weights('New weights: ')            
+        
     def show_menu(self):
         """
         This function prints out the menu options available for the grading system.
