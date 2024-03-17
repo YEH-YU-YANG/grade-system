@@ -269,43 +269,60 @@ class ScoreSystem:
         """
     def print_weights(self,prefix_str):
         """
-        print the message of prefix_str and value of weights
-        
-        :param : prefix_str
-        :type : str
+        Print the weights along with a specified prefix string.
+
+        :param prefix_str: The prefix string to be displayed before the weights.
+        :type prefix_str: str
+
+        :return: None
+        :rtype: None
+
+        Running Example:
+        >>>> object.print_weights('Old weights')
+        Old weights: lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+
+        >>>> object.print_weights('New weights')
+        New weights: lab1 0.2 lab2 0.1 lab3 0.5 mid_term 0.3 final_exam 0.33
+        """
+        print(f'{prefix_str}:', end=' ')
+        print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
+    
+    def update_weights(self, new_weights_str):
+        """
+        Update the weighting of the grading system.
+
+        :param new_weights_str: A string representing the new weights for various tests.
+                                Format: "test1 weight1 test2 weight2 ..."
+                                Example: "lab1 20% mid_term 10 final_exam 50%"
+        :type new_weights_str: str
         
         :return: None
         :rtype: None
         
         Running Example:
-        >>>> object.print_weights('Old weights')
+        
+        >>>> object.update_weights("lab1 20%")
         Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-             
-        >>>> object.print_weights('New weights')
-        New weights: : lab1 0.2 lab2 0.1 lab3 0.5 mid_term 0.3 final_exam 0.33
-        """
-        print(f'{prefix_str}:', end=' ')
-        print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
-    
-    def update_weights(self):
-        """
-        Update the weighting of the grading system.
-        i.e., Provide "updated weighting", and make the update.
+        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
         
-        :param :
-        :type :
+        >>>> object.update_weights("lab1 20")
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
         
-        :return:
-        :rtype:
+        >>>> object.update_weights("lab1 0.2")
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
         
-        Running Example:
+        >>>> object.update_weights("lab1 0.2 mid_term 10 final_exam 50%")
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.1 final_exam 0.5
+        
+        >>>> object.update_weights("mid_term 10 lab1 0.2 final_exam 35% lab2 25")
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        New weights: : lab1 0.2 lab2 0.25 lab3 0.1 mid_term 0.1 final_exam 0.35
         """
         self.print_weights('Old weights: ')            
-        # final_exam 33 lab1 20% lab2 10 lab3 0.5
-        # lab2 10 final_exam 0.33 lab1 20% lab3 0.5
-        # lab1 20% lab2 70 lab3 0.5 final_exam 0.33
-        user_input = input("Please enter new weights: ")
-        new_weights_list = user_input.split()
+        new_weights_list = new_weights_str.split()
         for i in range(0, len(new_weights_list), 2):
             test = new_weights_list[i]
             weight = new_weights_list[i+1]
@@ -317,7 +334,6 @@ class ScoreSystem:
                 weight = float(weight)
                 
             self.weights[test] = weight
-        
         self.print_weights('New weights: ')            
         
     def show_menu(self):
@@ -373,7 +389,9 @@ class ScoreSystem:
             elif user_input == '6': self.filtering()
             elif user_input == '7': self.add_student()
             elif user_input == '8': self.update_grade()
-            elif user_input == '9': self.update_weights()
+            elif user_input == '9': 
+                user_input = input("Please enter new weights: ")
+                self.update_weights(user_input)
             else : 
                 print("Exit, see you next time.")
                 break
