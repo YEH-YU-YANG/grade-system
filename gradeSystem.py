@@ -190,7 +190,34 @@ class ScoreSystem:
         
         Running Example:
         """
+    def show_menu(self):
+        """
+        This function prints out the menu options available for the grading system.
+        Users can select from these options to perform various functions related to grading,
+        as well as to exit the system.
 
+        :param: None
+        :type: None
+
+        :return: None
+        :rtype: None
+
+        Running Example: None
+        """
+        print("")
+        print("Function Menu")
+        print("1) Show grade ")
+        print("2) Show grade letter") 
+        print("3) Show average")
+        print("4) Show rank")
+        print("5) Show distribution")
+        print("6) Filtering")
+        print("7) Add student")
+        print("8) Update grade")
+        print("9) Update weights")
+        print("10) Exit")
+        print("")
+        
     def function_menu_and_exit(self):
         """
         The menu of functions for the grading system & Exit system.
@@ -204,34 +231,24 @@ class ScoreSystem:
         
         Running Example:
         """
+        print("Welcome to the Grade System.") 
         while True:
-            user_input = input('''Welcome to the Grade System. 
-            1) Show grade 
-            2) Show grade letter 
-            3) Show average
-            4) Show rank
-            5) Show distribution
-            6) Filtering
-            7) Add student
-            8) Update grade
-            9) Update weights
-            10) Exit
-            ''')
-            if user_input == 1: self.show_score()
-            elif user_input == 2: self.show_grade_letter()
-            elif user_input == 3: self.show_average()
-            elif user_input == 4: self.show_rank()
-            elif user_input == 5: self.show_distribution()
-            elif user_input == 6: self.filtering()
-            elif user_input == 7: self.add_student()
-            elif user_input == 8: self.update_grade()
-            elif user_input == 9: self.update_weights()
+            self.show_menu()
+            user_input = input("請輸入指令(1~10)開始使用: ")
+            if user_input == '1': self.show_score()
+            elif user_input == '2': self.show_grade_letter()
+            elif user_input == '3': self.show_average()
+            elif user_input == '4': self.show_rank()
+            elif user_input == '5': self.show_distribution()
+            elif user_input == '6': self.filtering()
+            elif user_input == '7': self.add_student()
+            elif user_input == '8': self.update_grade()
+            elif user_input == '9': self.update_weights()
             else : 
                 print("Exit, see you next time.")
                 break
                 
     
-
     def load_input_data(self):
         """
         Function to load input data required for the grading system.
