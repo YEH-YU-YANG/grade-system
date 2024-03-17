@@ -52,8 +52,20 @@ class ScoreSystem:
         
         user_input = input("Please enter student id: ")
         
-        scores = self.student[user_input]
-        print("Score : ", scores)
+        student_data = self.student[user_input]
+        student_score = student_data['scores']
+        lab1 = student_score[0]
+        lab2 = student_score[1]
+        lab3 = student_score[2]
+        mid_term = student_score[3]
+        final_exam = student_score[4]
+        
+        print("Student's scores are:")
+        print(f'lab1:{lab1}')
+        print(f'lab2:{lab2}')
+        print(f'lab3:{lab3}')
+        print(f'midTerm:{mid_term}')
+        print(f'finalExam:{final_exam}')
         
     
     def show_grade_letter(self):
@@ -69,7 +81,6 @@ class ScoreSystem:
         
         Running Example:
         """
-
 
     def show_average(self):
         """
@@ -229,7 +240,7 @@ class ScoreSystem:
         :param : None
         :returns : None
         """
-        with open('input.txt', 'r') as file:
+        with open('input.txt', 'r', encoding='utf-8') as file:
             txt_content = file.read()
         
         lines = txt_content.split('\n')
