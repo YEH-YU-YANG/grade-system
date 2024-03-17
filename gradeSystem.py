@@ -17,6 +17,8 @@ Docstring for Every Method:
     
 """
 
+import pandas as pd
+
 class ScoreSystem:
     
     def __init__(self):
@@ -31,6 +33,7 @@ class ScoreSystem:
         
         Running Example:
         """
+        self.student = {}
 
         
     def show_score(self):
@@ -191,11 +194,24 @@ class ScoreSystem:
     def load_input_data(self):
         """
         Function to load input data required for the grading system.
+        And store them in self.student in json.
 
         :param : None
         :returns : None
         """
+        with open('input.txt', 'r') as file:
+            txt_content = file.read()
         
+        lines = txt_content.split('\n')
+        
+        for line in lines:
+            data = line.split(' ')
+            if(len(data) <= 1) :continue
+            student_id = data[0]
+            student_name = data[1]
+            scores = list(map(float, data[2:]))
+            self.student.update({f"{student_id}" : {"name": student_name, "scores": scores}})
+            
         
     def run(self):
         """
