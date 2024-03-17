@@ -36,7 +36,13 @@ class ScoreSystem:
         """
         self.student = {}
         
-        self.weight = [0.1, 0.1, 0.1, 0.3, 0.4]
+        self.weights = {
+            'lab1': 0.1,
+            'lab2': 0.1,
+            'lab3': 0.1,
+            'mid_term': 0.3,
+            'final_exam': 0.4,   
+        }
 
         
     def show_score(self):
@@ -44,13 +50,26 @@ class ScoreSystem:
         Display all grades of the student (five scores).
         i.e., Provide "ID" and display "the five scores".
         
-        :param :
-        :type :
+        :param : None
+        :type : None
         
-        :return:
-        :rtype:
+        :return: None
+        :rtype: None
         
         Running Example:
+        >>> object.show_score()
+        
+            Please enter student id: 12345
+            Student's scores:
+            +--------------+-------+
+            |    Subject   | Score |
+            +--------------+-------+
+            |     Lab 1    |   90   |
+            |     Lab 2    |   85   |
+            |     Lab 3    |   92   |
+            |   Mid-Term   |   88   |
+            |  Final Exam  |   95   |
+            +--------------+-------+
         """
         
         user_input = input("Please enter student id: ")
@@ -158,19 +177,14 @@ class ScoreSystem:
         
         user_input = input("Please enter student id: ")
         student_data = self.student.get(user_input)
-    
+        weights = self.weights.values()
         # Check if the student exists
         if student_data:
-            student_score = student_data['scores']
-            # Extract individual scores     
-            
+            student_scores = student_data['scores']     
             weighted_score = []
-            for x, y in zip(student_score, self.weight):
-                weighted_score.append(x * y)
-    
+            for student_score, weight in zip(student_scores, weights):
+                weighted_score.append(student_score * weight)
             mean_score = sum(weighted_score)
-            
-            # Print the student's scores in a table format
             print(f"Student's average scores: {mean_score:.2f}")
         else:
             print("Student ID not found.")
@@ -269,6 +283,7 @@ class ScoreSystem:
         
         Running Example:
         """
+                
     def show_menu(self):
         """
         This function prints out the menu options available for the grading system.
