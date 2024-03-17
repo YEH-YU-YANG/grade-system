@@ -52,20 +52,27 @@ class ScoreSystem:
         
         user_input = input("Please enter student id: ")
         
-        student_data = self.student[user_input]
-        student_score = student_data['scores']
-        lab1 = student_score[0]
-        lab2 = student_score[1]
-        lab3 = student_score[2]
-        mid_term = student_score[3]
-        final_exam = student_score[4]
-        
-        print("Student's scores are:")
-        print(f'lab1:{lab1}')
-        print(f'lab2:{lab2}')
-        print(f'lab3:{lab3}')
-        print(f'midTerm:{mid_term}')
-        print(f'finalExam:{final_exam}')
+        student_data = self.student.get(user_input)
+    
+        # Check if the student exists
+        if student_data:
+            student_score = student_data['scores']
+            # Extract individual scores
+            lab1, lab2, lab3, mid_term, final_exam = student_score
+            
+            # Print the student's scores in a table format
+            print("Student's scores:")
+            print("+--------------+-------+")
+            print("|    Subject   | Score |")
+            print("+--------------+-------+")
+            print(f"|     Lab 1    |   {int(lab1)}   |")
+            print(f"|     Lab 2    |   {int(lab2)}   |")
+            print(f"|     Lab 3    |   {int(lab3)}   |")
+            print(f"|   Mid-Term   |   {int(mid_term)}   |")
+            print(f"|  Final Exam  |   {int(final_exam)}   |")
+            print("+--------------+-------+")
+        else:
+            print("Student ID not found.")
         
     
     def show_grade_letter(self):
