@@ -284,7 +284,8 @@ class ScoreSystem:
         >>>> object.print_weights('New weights')
         New weights: lab1 0.2 lab2 0.1 lab3 0.5 mid_term 0.3 final_exam 0.33
         """
-        print(f'{prefix_str}:', end=' ')
+        if len(prefix_str) >= 1:
+            print(f'{prefix_str}:', end=' ')
         print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
     
     def update_weights(self, new_weights_str):
@@ -332,7 +333,6 @@ class ScoreSystem:
                 weight = float(weight) / 100
             else:
                 weight = float(weight)
-                
             self.weights[test] = weight
         self.print_weights('New weights: ')            
         
@@ -366,32 +366,48 @@ class ScoreSystem:
         
     def function_menu_and_exit(self):
         """
-        The menu of functions for the grading system & Exit system.
-        i.e., Ability to select the above functions and exit the system.
+        Menu options for the grading system and exit functionality.
+        Allows users to select various functions and exit the system.
         
-        :param :
-        :type :
+        :param: None
+        :type: None
         
-        :return:
-        :rtype:
+        :return: None
+        :rtype: None
         
         Running Example:
+        
+        >>> object.function_menu_and_exit()  # Some information will be displayed below
+        
+        Welcome to the Grade System.
+
+        Function Menu
+        1) Show grade 
+        2) Show grade letter
+        3) Show average
+        4) Show rank
+        5) Show distribution
+        6) Filtering
+        7) Add student
+        8) Update grade
+        9) Update weights
+        10) Exit
+
+        Please enter a command (1-10) to begin :
         """
         print("Welcome to the Grade System.") 
         while True:
             self.show_menu()
-            user_input = input("請輸入指令(1~10)開始使用: ")
-            if user_input == '1': self.show_score()
+            user_input = input("Please enter a command (1-10) to begin: ")
+            if   user_input == '1': self.show_score()
             elif user_input == '2': self.show_grade_letter()
             elif user_input == '3': self.show_average()
             elif user_input == '4': self.show_rank()
             elif user_input == '5': self.show_distribution()
-            elif user_input == '6': self.filtering()
-            elif user_input == '7': self.add_student()
-            elif user_input == '8': self.update_grade()
-            elif user_input == '9': 
-                user_input = input("Please enter new weights: ")
-                self.update_weights(user_input)
+            elif user_input == '6': user_input = input('\n'+"Please enter a score: ");            self.filtering(user_input)
+            elif user_input == '7': user_input = input('\n'+"Please enter new student's data: "); self.add_student(user_input)
+            elif user_input == '8': user_input = input('\n'+"Please enter id and new grade: ");   self.update_grade(user_input); 
+            elif user_input == '9': user_input = input('\n'+"Please enter new weights: ");        self.update_weights(user_input); 
             else : 
                 print("Exit, see you next time.")
                 break
