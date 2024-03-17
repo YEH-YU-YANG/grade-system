@@ -18,6 +18,7 @@ Docstring for Every Method:
 """
 
 import statistics as stat
+import numpy as np
 
 class ScoreSystem:
     
@@ -34,6 +35,8 @@ class ScoreSystem:
         Running Example:
         """
         self.student = {}
+        
+        self.weight = [0.1, 0.1, 0.1, 0.3, 0.4]
 
         
     def show_score(self):
@@ -159,11 +162,16 @@ class ScoreSystem:
         # Check if the student exists
         if student_data:
             student_score = student_data['scores']
-            # Extract individual scores            
-            mean_score = stat.mean(student_score)
+            # Extract individual scores     
+            
+            weighted_score = []
+            for x, y in zip(student_score, self.weight):
+                weighted_score.append(x * y)
+    
+            mean_score = sum(weighted_score)
             
             # Print the student's scores in a table format
-            print(f"Student's average scores: {mean_score}")
+            print(f"Student's average scores: {mean_score:.2f}")
         else:
             print("Student ID not found.")
 
