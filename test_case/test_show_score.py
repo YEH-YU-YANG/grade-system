@@ -1,4 +1,7 @@
 import unittest
+from unittest.mock import patch
+import sys 
+sys.path.append("..") 
 from gradeSystem import ScoreSystem
 
 class TestShowScore(unittest.TestCase):
@@ -6,8 +9,18 @@ class TestShowScore(unittest.TestCase):
     Test show_score function
     """
     def setUp(self):
-        # 在每個測試方法執行前設置所需的資源
-        self.system = ScoreSystem()   
+        """
+        Method description:
+            initializes the ScoreSystem object and assigns it to self.system so that it can be used in the test methods.
+        """
+        self.system = ScoreSystem()
+    
+    def shortDescription(self):
+        """
+        Method description:
+            Override the shortDescription method to prevent displaying test method descriptions.
+        """
+        return None
         
         
 # if __name__ == '__main__':
