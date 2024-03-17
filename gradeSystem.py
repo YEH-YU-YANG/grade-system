@@ -49,7 +49,12 @@ class ScoreSystem:
         
         Running Example:
         """
-
+        
+        user_input = input("Please enter student id: ")
+        
+        scores = self.student[user_input]
+        print("Score : ", scores)
+        
     
     def show_grade_letter(self):
         """    
@@ -188,7 +193,32 @@ class ScoreSystem:
         
         Running Example:
         """
-
+        while True:
+            user_input = input('''Welcome to the Grade System. 
+            1) Show grade 
+            2) Show grade letter 
+            3) Show average
+            4) Show rank
+            5) Show distribution
+            6) Filtering
+            7) Add student
+            8) Update grade
+            9) Update weights
+            10) Exit
+            ''')
+            if user_input == 1: self.show_score()
+            elif user_input == 2: self.show_grade_letter()
+            elif user_input == 3: self.show_average()
+            elif user_input == 4: self.show_rank()
+            elif user_input == 5: self.show_distribution()
+            elif user_input == 6: self.filtering()
+            elif user_input == 7: self.add_student()
+            elif user_input == 8: self.update_grade()
+            elif user_input == 9: self.update_weights()
+            else : 
+                print("Exit, see you next time.")
+                break
+                
     
 
     def load_input_data(self):
@@ -223,7 +253,7 @@ class ScoreSystem:
         
         self.load_input_data()
         self.function_menu_and_exit()
-        
+                
         
 
 if __name__ == "__main__":
