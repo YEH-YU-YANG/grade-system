@@ -17,7 +17,7 @@ Docstring for Every Method:
     
 """
 
-import pandas as pd
+import statistics as stat
 
 class ScoreSystem:
     
@@ -152,6 +152,20 @@ class ScoreSystem:
         
         Running Example:
         """    
+        
+        user_input = input("Please enter student id: ")
+        student_data = self.student.get(user_input)
+    
+        # Check if the student exists
+        if student_data:
+            student_score = student_data['scores']
+            # Extract individual scores            
+            mean_score = stat.mean(student_score)
+            
+            # Print the student's scores in a table format
+            print(f"Student's average scores: {mean_score}")
+        else:
+            print("Student ID not found.")
 
         
     def show_rank(self):
