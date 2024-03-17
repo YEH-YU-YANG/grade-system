@@ -73,21 +73,71 @@ class ScoreSystem:
             print("+--------------+-------+")
         else:
             print("Student ID not found.")
+    
+    def score_to_grad_letter(self, score):
+        """    
+        Display the grade level of the student (e.g., A-).
+        i.e., Provide "ID" and display "the grade level".
         
+        :param : score
+        :type : int
+        
+        :return: grade_letter
+        :rtype: int
+        
+        Running Example:
+        """
+        
+        if   score >= 90: grade_letter = 'A+'
+        elif score >= 85: grade_letter = 'A '
+        elif score >= 80: grade_letter = 'A-'
+        elif score >= 77: grade_letter = 'B+'
+        elif score >= 73: grade_letter = 'B '
+        elif score >= 70: grade_letter = 'B-'
+        elif score >= 67: grade_letter = 'C+'
+        elif score >= 63: grade_letter = 'C '
+        elif score >= 60: grade_letter = 'C-'
+        elif score >= 50: grade_letter = 'D '
+        else: grade_letter = 'E '
+        
+        return grade_letter
     
     def show_grade_letter(self):
         """    
         Display the grade level of the student (e.g., A-).
         i.e., Provide "ID" and display "the grade level".
         
-        :param :
-        :type :
+        :param : None
+        :type : None
         
-        :return:
-        :rtype:
+        :return: None
+        :rtype: None
         
         Running Example:
         """
+        
+        user_input = input("Please enter student id: ")
+        student_data = self.student.get(user_input)
+    
+        # Check if the student exists
+        if student_data:
+            student_score = student_data['scores']
+            # Extract individual scores
+            lab1, lab2, lab3, mid_term, final_exam = [self.score_to_grad_letter(score) for score in student_score]
+            
+            # Print the student's scores in a table format
+            print("Student's scores:")
+            print("+--------------+-------+")
+            print("|    Subject   | Score |")
+            print("+--------------+-------+")
+            print(f"|     Lab 1    |   {lab1}  |")
+            print(f"|     Lab 2    |   {lab2}  |")
+            print(f"|     Lab 3    |   {lab3}  |")
+            print(f"|   Mid-Term   |   {mid_term}  |")
+            print(f"|  Final Exam  |   {final_exam}  |")
+            print("+--------------+-------+")
+        else:
+            print("Student ID not found.")
 
     def show_average(self):
         """
