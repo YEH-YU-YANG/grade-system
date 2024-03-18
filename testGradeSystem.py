@@ -1,7 +1,20 @@
 import unittest
-from gradeSystem import ScoreSystem
+import sys
+class DevNull:
+    """
+    Suppress print statements during test execution by redirecting stdout to an instance of DevNull, 
+    which does nothing when written to.
     
-def run_test(suite):
+    Attributes:
+        None
+
+    Methods:
+        write(self, msg): A method that does nothing when called.
+    """
+    def write(self, msg):
+        pass
+    
+def run_test(suite, disable_print=False):
     """
     Execute test cases.
 
@@ -11,12 +24,20 @@ def run_test(suite):
     :rtype: None
     
     Running Example:
-        run_test(suite)
+    >>>> run_test(suite)
     
     """
+    # Save the current stdout
+    old_stdout = sys.stdout
     
+    if disable_print:
+        sys.stdout = DevNull()
+
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
+    
+    # Restore the original stdout
+    sys.stdout = old_stdout
 
 def set_suite():
     """
@@ -44,26 +65,8 @@ def set_suite():
 if __name__ == '__main__':
     
     """
-    Run all tests together.
-    """
-    # unittest.main()
-    
-    """
-    Run specific unit tests.
-    If all test cases are in the same file.
-    """
-    
-    # suit = unittest.TestSuite()
-    # test_cases = [TestSubtract("test_1"), TestSubtract("test_2"), TestSubtract("test_3")]
-    # suit.addTests(test_cases)
-
-    # runner = unittest.TextTestRunner()
-    # runner.run(suit)
-    
-    """
-    Run specific unit tests.
-    If test cases are split into multiple files.
+    Execute specific unit tests.
     """
     
     suite = set_suite()
-    run_test(suite)
+    run_test(suite, disable_print=True)
