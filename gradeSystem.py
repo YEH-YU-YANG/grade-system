@@ -288,54 +288,144 @@ class ScoreSystem:
             print(f'{prefix_str}:', end=' ')
         print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
     
-    def update_weights(self, new_weights_str):
+    def valid_weights(self, weights):
         """
-        Update the weighting of the grading system.
+        Validates whether the provided weights are valid or not.
+        
+        :param new_weights: A dictionary containing test names as keys and their corresponding weights as values.
+        :type new_weighs: JSON
+        
+        :return: A boolean indicating whether the weights are valid (True) or not (False).
+        :rtype: bool
+        
+        Example: 
+        
+        default_weights = {
+            'lab1': 0.1,      
+            'lab2': 0.1,      
+            'lab3': 0.1,      
+            'mid_term': 0.3,  
+            'final_exam': 0.4,
+        }
+        
+        >>> new_weights = {"lab1": 0.2, "lab2": 0} 
+        >>> object.valid_weights(new_weights)
+        True
+        
+        >>> new_weights = {"lab1": 0.2} 
+        >>> object.valid_weights(new_weights)
+        False
+        
+        """
+        is_valid = True
+        for test, weight in weights.items():
+            weights[test] = weight
+        total_weight = sum(weights.values())
+        if not total_weight == 1:
+            is_valid =  False   
 
-        :param new_weights_str: A string representing the new weights for various tests.
-                                Format: "test1 weight1 test2 weight2 ..."
-                                Example: "lab1 20% mid_term 10 final_exam 50%"
-        :type new_weights_str: str
-        
-        :return: None
-        :rtype: None
-        
-        Running Example:
-        
-        >>>> object.update_weights("lab1 20%")
-        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        
-        >>>> object.update_weights("lab1 20")
-        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        
-        >>>> object.update_weights("lab1 0.2")
-        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        
-        >>>> object.update_weights("lab1 0.2 mid_term 10 final_exam 50%")
-        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        New weights: : lab1 0.2 lab2 0.1 lab3 0.1 mid_term 0.1 final_exam 0.5
-        
-        >>>> object.update_weights("mid_term 10 lab1 0.2 final_exam 35% lab2 25")
-        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-        New weights: : lab1 0.2 lab2 0.25 lab3 0.1 mid_term 0.1 final_exam 0.35
+        return is_valid
+    
+    def format_weights_value(self, weights):
         """
-        self.print_weights('Old weights: ')            
-        new_weights_list = new_weights_str.split()
-        for i in range(0, len(new_weights_list), 2):
-            test = new_weights_list[i]
-            weight = new_weights_list[i+1]
+        Converting percentages/decimals to floats if necessary.
+        
+        :param weights: A JSON object containing weights.
+        :type weights: JSON
+        
+        "return new_weights" A JSON object with formatted(float) weights.
+        :rtype new_weights: JSON
+        
+        Example:
+        
+        weights = {
+            "test1": "50%",
+            "test2": "0.75",
+            "test3": "35"
+        }
+        >>>> new_weights = format_weights_value(weights)
+        new_weights = {
+            "test1": 0.5,
+            "test2": 0.75,
+            "test3": 0.35
+        }
+        """
+        
+        new_weights = self.weights.copy()
+        for test, weight in weights.items():
             if '%' in weight:
                 weight = float(weight.strip('%')) / 100
             elif 1 <= float(weight) and float(weight) <=100:
                 weight = float(weight) / 100
             else:
                 weight = float(weight)
-            self.weights[test] = weight
-        self.print_weights('New weights: ')            
+            new_weights[test] = weight
+        return new_weights
+    
+    def weights_from_list_to_json(self, weights_list):
+        """
+        Convert weights from a list format to a JSON format.
         
+        :param weights_list: A list containing test names and weights.
+                             For example: ["test1", "weight1", "test2", "weight2", ...]
+        :type weights_list: List
+        
+        :return weights_json:  A JSON-formatted dictionary containing test names as keys and corresponding weights as values.
+        :rtype weights_json: dict
+        """
+        weights_json = {}
+        for i in range(0, len(weights_list), 2):
+            test = weights_list[i]
+            weight = weights_list[i+1]
+            weights_json[test] = weight
+        return weights_json
+    
+    def update_weights(self):
+        """
+        This method prompts the user to input new weights for the grading system. 
+        If the provided weights are valid, they are updated; otherwise, no changes are made.
+        
+        :param: None
+        :type: None
+        
+        :return: None
+        :rtype: None
+        
+        Running Example:
+        
+        >>>> object.update_weights() ; # when providing float input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 0.2 lab2 0
+        New weights: : lab1 0.2 lab2 0.0 lab3 0.1 mid_term 0.3 final_exam 0.4
+        
+        >>>> object.update_weights() ; # when providing decimal input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 20 lab2 0
+        New weights: : lab1 0.2 lab2 0.0 lab3 0.1 mid_term 0.3 final_exam 0.4
+        
+        >>>> object.update_weights() ; # # when providing percentage input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 20% lab2 0
+        New weights: : lab1 0.2 lab2 0.0 lab3 0.1 mid_term 0.3 final_exam 0.4
+        
+        >>>> object.update_weights() ; # when providing invalid input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 0.3
+        Invalid input ! Please enter new weights again !
+        """
+        print("")
+        self.print_weights('Old weights: ')
+        user_input = input("Please enter new weights: ");  
+        new_weights_list = user_input.strip().split()
+        new_weights_json = self.weights_from_list_to_json(new_weights_list)
+        new_weights_json = self.format_weights_value(new_weights_json)
+        if self.valid_weights(weights=new_weights_json):
+            for test, weight in new_weights_json.items():
+                self.weights[test] = weight
+            self.print_weights('New weights: ')         
+        else:
+            print("Invalid input ! Please enter new weights again !")
+              
     def show_menu(self):
         """
         This function prints out the menu options available for the grading system.
@@ -407,7 +497,7 @@ class ScoreSystem:
             elif user_input == '6': user_input = input('\n'+"Please enter a score: ");            self.filtering(user_input)
             elif user_input == '7': user_input = input('\n'+"Please enter new student's data: "); self.add_student(user_input)
             elif user_input == '8': user_input = input('\n'+"Please enter id and new grade: ");   self.update_grade(user_input); 
-            elif user_input == '9': user_input = input('\n'+"Please enter new weights: ");        self.update_weights(user_input); 
+            elif user_input == '9': self.update_weights(); 
             else : 
                 print("Exit, see you next time.")
                 break
