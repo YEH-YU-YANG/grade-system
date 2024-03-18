@@ -241,85 +241,302 @@ class ScoreSystem:
     
     def add_student(self):
         """
-        Add new student grade information.
-        i.e., Provide "new information", and add it.
+        Input new student ID, name, and grades. 
+        If the student ID doesn't exist in the database, the function adds the student's name and grades into the database.
         
-        :param :
-        :type :
-        
-        :return:
-        :rtype:
-        
-        Running Example:
-        """
+        :param: None
+        :return: None
 
+        Running Example:
+        
+        >>>> object.add_student()
+        new student ID: 55688
+        new student NAME: Ale
+        new student GRADEs: lab1 70 
+        
+        Student added successfully:
+            ID: 55688
+            Name: Ale
+            Grades: 
+            lab1: 70
+            lab2: 0
+            lab3: 0
+            mid_term: 0
+            final_exam: 0
+            
+        >>>> object.add_student()
+        new student ID: 111
+        new student NAME: Dyla
+        new student GRADEs: lab1 70 lab2 80 lab3 90 mid_term 100 final_exam 90   
+        
+        Student added successfully:
+            ID: 111
+            Name: Dyla
+            Grades: 
+            lab1: 70
+            lab2: 80
+            lab3: 90
+            mid_term: 100
+            final_exam: 90
+            
+        >>>> object.add_student()
+        new student ID: 7777
+        new student NAME: Rend
+        new student GRADEs: final_exam 60 mid_term 80 lab3 70 lab2 60 lab1 55 
+        
+        Student added successfully:
+            ID: 7777
+            Name: Rend
+            Grades: 
+            lab1: 55
+            lab2: 60
+            lab3: 70
+            mid_term: 80
+            final_exam: 60
+            
+        >>>> object.add_student() # when providing already exist ID
+        new student ID: 7777
+        print("Student already exists.")
+        """
+        id = input("\nPlease enter the new student's ID: ")
+        if id not in self.student:
+            name = input("\nPlease enter the new student's NAME: ")
+            self.student[id] = { 
+                "name": name,
+                "scores":{"lab1": 0,"lab2": 0,"lab3": 0,"mid_term": 0,"final_exam": 0} 
+            }         
+            grades_str = input("\nPlease enter the new student's grades, formatted as test1 grade1 test2 grade2 ...: ")
+            grades_list = grades_str.strip().split()
+            grades_json = self.list_to_json(grades_list)
+            for test, grade in grades_json.items():
+                self.student[id]['scores'][test] = int(grade)
+            self.display_data_with_prefix(prefix_str='Grades', print_grades=True, print_name=True, print_id=True, student_id=id)
+        else:
+            print("Student already exists.")
     
     def update_grade(self):
         """
         Update a student's specific grade.
         i.e., Provide "ID, updated information", and make the update.
         
-        :param :
-        :type :
-        
-        :return:
-        :rtype:
-        
-        Running Example:
-        """
-    def print_weights(self,prefix_str):
-        """
-        print the message of prefix_str and value of weights
-        
-        :param : prefix_str
-        :type : str
-        
+        :param: None
         :return: None
-        :rtype: None
         
         Running Example:
-        >>>> object.print_weights('Old weights')
-        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
-             
-        >>>> object.print_weights('New weights')
-        New weights: : lab1 0.2 lab2 0.1 lab3 0.5 mid_term 0.3 final_exam 0.33
+        
+        >>>> object.update_grade() # when providing invalid ID
+        Please enter id: 1234 
+        invalid input ! Please enter new ID again !
+        
+        >>>> object.update_grade() # when providing correct format
+        Please enter id: 955002056 
+        Old grades: lab1 88 lab2 92 lab3 88 mid_term 98 final_exam 91
+        Please enter new grades: lab1 80
+        New grades: lab1 80 lab2 92 lab3 88 mid_term 98 final_exam 91
+        
+        >>>> object.update_grade() # when providing correct format in random order
+        Please enter id: 955002056 
+        Old grades: lab1 88 lab2 92 lab3 88 mid_term 98 final_exam 91
+        Please enter new grades: final_exam 100 lab1 70 lab3 22
+        New grades: lab1 70 lab2 92 lab3 22 mid_term 98 final_exam 100
         """
-        print(f'{prefix_str}:', end=' ')
-        print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
+        
+        id = input('\n'+"Please enter id: ");
+        if id in self.student:
+            self.display_data_with_prefix('Old grades',print_grades=True,student_id=id)
+            new_grades_str = input("\nPlease enter new grades: ");
+            new_grades_list = new_grades_str.strip().split()
+            new_grades_json = self.list_to_json(new_grades_list)
+            for test, grade in new_grades_json.items():
+                if grade.isdigit():
+                    self.student[id]['scores'][test] = int(grade)
+            self.display_data_with_prefix('New grades',print_grades=True,student_id=id)         
+        else:
+            print("Invalid input ! Please enter new ID again !")
+            
+        
+    def display_data_with_prefix(self, prefix_str="", print_weight=False, print_grades=False, print_name=False, print_id=False, student_id=None):
+        """
+        Print weights or grades with a specified prefix string.
+
+        :param prefix_str: The prefix string to be displayed before the weights or grades.
+        :type prefix_str: str
+        
+        :param print_weight: Whether to print weights or not. Defaults to False.
+        :type print_weight: bool, optional
+        
+        :param print_grades: Whether to print grades or not. Defaults to False.
+        :type print_grades: bool, optional
+        
+        :param student_id: The ID of the student whose grades are to be printed. Defaults to None.
+        :type student_id: str, optional
+
+        Running Example:
+        
+        >>>> object.display_data_with_prefix('Old weights', print_weight=True)
+        Old weights: lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+
+        >>>> object.display_data_with_prefix('New weights', print_weight=True)
+        New weights: lab1 0.5 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0
+
+        >>>> object.display_data_with_prefix('Old Grades', print_grades=True, student_id='123')
+        New grades: lab1 70 lab2 80 lab3 80 mid_term 80 final_exam 80
+        
+        >>>> object.display_data_with_prefix('New Grades', print_grades=True, student_id='123')
+        New grades: lab1 90 lab2 80 lab3 80 mid_term 80 final_exam 80
+        
+        """
+        print('')
+        if print_id:  
+            print(f'ID: {student_id}')
+        if print_name:
+            student_name = self.student[student_id]['name']  
+            print(f'Student: {student_name}')
+        if len(prefix_str) >= 1:
+            print(f'{prefix_str}:', end=' ')
+        if print_weight:
+            print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
+        if print_grades and student_id in self.student:
+            student_scores = self.student[student_id]['scores']
+            print(' '.join([f'{key} {int(value)}' for key, value in student_scores.items()]))
+        
+    def valid_weights(self, weights):
+        """
+        Validates whether the provided weights are valid or not.
+        
+        :param new_weights: A dictionary containing test names as keys and their corresponding weights as values.
+        :type new_weighs: JSON
+        
+        :return: A boolean indicating whether the weights are valid (True) or not (False).
+        :rtype: bool
+        
+        Example: 
+        
+        default_weights = {
+            'lab1': 0.1,      
+            'lab2': 0.1,      
+            'lab3': 0.1,      
+            'mid_term': 0.3,  
+            'final_exam': 0.4,
+        }
+        
+        >>> new_weights = {"lab1": 0.2, "lab2": 0} 
+        >>> object.valid_weights(new_weights)
+        True
+        
+        >>> new_weights = {"lab1": 0.2} 
+        >>> object.valid_weights(new_weights)
+        False
+        
+        """
+        is_valid = True
+        for test, weight in weights.items():
+            weights[test] = weight
+        total_weight = sum(weights.values())
+        if not total_weight == 1:
+            is_valid =  False   
+
+        return is_valid
     
-    def update_weights(self):
+    def format_weights_value(self, weights):
         """
-        Update the weighting of the grading system.
-        i.e., Provide "updated weighting", and make the update.
+        Converting percentages/decimals to floats if necessary.
         
-        :param :
-        :type :
+        :param weights: A JSON object containing weights.
+        :type weights: JSON
         
-        :return:
-        :rtype:
+        "return new_weights" A JSON object with formatted(float) weights.
+        :rtype new_weights: JSON
         
-        Running Example:
+        Example:
+        
+        weights = {
+            "test1": "50%",
+            "test2": "0.75",
+            "test3": "35"
+        }
+        >>>> new_weights = format_weights_value(weights)
+        new_weights = {
+            "test1": 0.5,
+            "test2": 0.75,
+            "test3": 0.35
+        }
         """
-        self.print_weights('Old weights: ')            
-        # final_exam 33 lab1 20% lab2 10 lab3 0.5
-        # lab2 10 final_exam 0.33 lab1 20% lab3 0.5
-        # lab1 20% lab2 70 lab3 0.5 final_exam 0.33
-        user_input = input("Please enter new weights: ")
-        new_weights_list = user_input.split()
-        for i in range(0, len(new_weights_list), 2):
-            test = new_weights_list[i]
-            weight = new_weights_list[i+1]
+        
+        new_weights = self.weights.copy()
+        for test, weight in weights.items():
             if '%' in weight:
                 weight = float(weight.strip('%')) / 100
             elif 1 <= float(weight) and float(weight) <=100:
                 weight = float(weight) / 100
             else:
                 weight = float(weight)
-                
-            self.weights[test] = weight
+            new_weights[test] = weight
+        return new_weights
+    
+    def list_to_json(self, list):
+        """
+        Convert a list to a JSON.
         
-        self.print_weights('New weights: ')            
+        :param weights_list: A list containing test names and values.
+                             For example: ["test1", "value1", "test2", "value2", ...]
+        :type weights_list: List
         
+        :return weights_json:  A JSON-formatted dictionary containing test names as keys and corresponding values.
+        :rtype weights_json: dict
+        """
+        json = {}
+        for i in range(0, len(list), 2):
+            test = list[i]
+            value = list[i+1]
+            json[test] = value
+        return json
+    
+    def update_weights(self):
+        """
+        This method prompts the user to input new weights for the grading system. 
+        If the provided weights are valid, they are updated; otherwise, no changes are made.
+        
+        :param: None
+        :type: None
+        
+        :return: None
+        :rtype: None
+        
+        Running Example:
+        
+        >>>> object.update_weights() ; # when providing float input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 0.2 lab2 0
+        New weights: : lab1 0.2 lab2 0.0 lab3 0.1 mid_term 0.3 final_exam 0.4
+        
+        >>>> object.update_weights() ; # when providing decimal input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 20 lab2 0
+        New weights: : lab1 0.2 lab2 0.0 lab3 0.1 mid_term 0.3 final_exam 0.4
+        
+        >>>> object.update_weights() ; # # when providing percentage input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 20% lab2 0
+        New weights: : lab1 0.2 lab2 0.0 lab3 0.1 mid_term 0.3 final_exam 0.4
+        
+        >>>> object.update_weights() ; # when providing invalid input
+        Old weights: : lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
+        Please enter new weights: lab1 0.3
+        Invalid input ! Please enter new weights again !
+        """
+        self.display_data_with_prefix('Old weights',print_weight=True)
+        new_weights_str = input("\nPlease enter new weights: ");  
+        new_weights_list = new_weights_str.strip().split()
+        new_weights_json = self.list_to_json(new_weights_list)
+        new_weights_json = self.format_weights_value(new_weights_json)
+        if self.valid_weights(weights=new_weights_json):
+            for test, weight in new_weights_json.items():
+                self.weights[test] = float(weight)
+            self.display_data_with_prefix('New weights',print_weight=True)         
+        else:
+            print("Invalid input ! Please enter new weights again !")
+              
     def show_menu(self):
         """
         This function prints out the menu options available for the grading system.
@@ -350,30 +567,48 @@ class ScoreSystem:
         
     def function_menu_and_exit(self):
         """
-        The menu of functions for the grading system & Exit system.
-        i.e., Ability to select the above functions and exit the system.
+        Menu options for the grading system and exit functionality.
+        Allows users to select various functions and exit the system.
         
-        :param :
-        :type :
+        :param: None
+        :type: None
         
-        :return:
-        :rtype:
+        :return: None
+        :rtype: None
         
         Running Example:
+        
+        >>> object.function_menu_and_exit()  # Some information will be displayed below
+        
+        Welcome to the Grade System.
+
+        Function Menu
+        1) Show grade 
+        2) Show grade letter
+        3) Show average
+        4) Show rank
+        5) Show distribution
+        6) Filtering
+        7) Add student
+        8) Update grade
+        9) Update weights
+        10) Exit
+
+        Please enter a command (1-10) to begin :
         """
         print("Welcome to the Grade System.") 
         while True:
             self.show_menu()
-            user_input = input("請輸入指令(1~10)開始使用: ")
-            if user_input == '1': self.show_score()
+            user_input = input("Please enter a command (1-10) to begin: ")
+            if   user_input == '1': self.show_score()
             elif user_input == '2': self.show_grade_letter()
             elif user_input == '3': self.show_average()
             elif user_input == '4': self.show_rank()
             elif user_input == '5': self.show_distribution()
-            elif user_input == '6': self.filtering()
+            elif user_input == '6': user_input = input('\n'+"Please enter a score: ");            self.filtering(user_input)
             elif user_input == '7': self.add_student()
-            elif user_input == '8': self.update_grade()
-            elif user_input == '9': self.update_weights()
+            elif user_input == '8': self.update_grade(); 
+            elif user_input == '9': self.update_weights(); 
             else : 
                 print("Exit, see you next time.")
                 break
@@ -389,16 +624,21 @@ class ScoreSystem:
         """
         with open('input.txt', 'r', encoding='utf-8') as file:
             txt_content = file.read()
-        
         lines = txt_content.split('\n')
-        
         for line in lines:
             data = line.split(' ')
             if(len(data) <= 1) :continue
-            student_id = data[0]
-            student_name = data[1]
-            scores = list(map(float, data[2:]))
-            self.student.update({f"{student_id}" : {"name": student_name, "scores": scores}})
+            student_id, student_name, lab1, lab2, lab3, mid_term, final_exam = data[0], data[1], int(data[2]), int(data[3]), int(data[4]), int(data[5]), int(data[6])
+            self.student[student_id] = {
+                "name": student_name,
+                "scores":{                    
+                    "lab1": lab1,
+                    "lab2": lab2,
+                    "lab3": lab3,
+                    "mid_term": mid_term,
+                    "final_exam": final_exam,
+                } 
+            }
             
         
     def run(self):
