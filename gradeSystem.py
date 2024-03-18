@@ -267,27 +267,60 @@ class ScoreSystem:
         
         Running Example:
         """
-    def print_weights(self,prefix_str):
+        
+        id = input('\n'+"Please enter id: ");
+        if id in self.student:
+            self.display_data_with_prefix('Old grades',print_grades=True,student_id=id)
+            new_grades_str = input("Please enter new grades: ");
+            new_grades_list = new_grades_str.strip().split()
+            new_grades_json = self.list_to_json(new_grades_list)
+            for test, grade in new_grades_json.items():
+                if grade.isdigit():
+                    self.student[id]['scores'][test] = int(grade)
+            self.display_data_with_prefix('New grades',print_grades=True,student_id=id)         
+        else:
+            print("Invalid input ! Please enter new ID again !")
+            
+        
+    def display_data_with_prefix(self, prefix_str, print_weight=False, print_grades=False,student_id=None):
         """
-        Print the weights along with a specified prefix string.
+        Print weights or grades with a specified prefix string.
 
-        :param prefix_str: The prefix string to be displayed before the weights.
+        :param prefix_str: The prefix string to be displayed before the weights or grades.
         :type prefix_str: str
-
-        :return: None
-        :rtype: None
+        
+        :param print_weight: Whether to print weights or not. Defaults to False.
+        :type print_weight: bool, optional
+        
+        :param print_grades: Whether to print grades or not. Defaults to False.
+        :type print_grades: bool, optional
+        
+        :param student_id: The ID of the student whose grades are to be printed. Defaults to None.
+        :type student_id: str, optional
 
         Running Example:
-        >>>> object.print_weights('Old weights')
+        
+        >>>> object.display_data_with_prefix('Old weights', print_weight=True)
         Old weights: lab1 0.1 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0.4
 
-        >>>> object.print_weights('New weights')
-        New weights: lab1 0.2 lab2 0.1 lab3 0.5 mid_term 0.3 final_exam 0.33
+        >>>> object.display_data_with_prefix('New weights', print_weight=True)
+        New weights: lab1 0.5 lab2 0.1 lab3 0.1 mid_term 0.3 final_exam 0
+
+        >>>> object.display_data_with_prefix('Old Grades', print_grades=True, student_id='123')
+        New grades: lab1 70 lab2 80 lab3 80 mid_term 80 final_exam 80
+        
+        >>>> object.display_data_with_prefix('New Grades', print_grades=True, student_id='123')
+        New grades: lab1 90 lab2 80 lab3 80 mid_term 80 final_exam 80
+        
         """
         if len(prefix_str) >= 1:
             print(f'{prefix_str}:', end=' ')
-        print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
-    
+        if print_weight:
+            print(' '.join([f'{key} {value}' for key, value in self.weights.items()]))
+        if print_grades and id in  self.student:
+            student_scores = self.student[student_id]['scores']
+            print(' '.join([f'{key} {int(value)}' for key, value in student_scores.items()]))
+        
     def valid_weights(self, weights):
         """
         Validates whether the provided weights are valid or not.
@@ -362,7 +395,7 @@ class ScoreSystem:
             new_weights[test] = weight
         return new_weights
     
-    def weights_from_list_to_json(self, weights_list):
+    def list_to_json(self, list):
         """
         Convert weights from a list format to a JSON format.
         
@@ -373,12 +406,12 @@ class ScoreSystem:
         :return weights_json:  A JSON-formatted dictionary containing test names as keys and corresponding weights as values.
         :rtype weights_json: dict
         """
-        weights_json = {}
-        for i in range(0, len(weights_list), 2):
-            test = weights_list[i]
-            weight = weights_list[i+1]
-            weights_json[test] = weight
-        return weights_json
+        json = {}
+        for i in range(0, len(list), 2):
+            test = list[i]
+            value = list[i+1]
+            json[test] = value
+        return json
     
     def update_weights(self):
         """
@@ -414,15 +447,15 @@ class ScoreSystem:
         Invalid input ! Please enter new weights again !
         """
         print("")
-        self.print_weights('Old weights: ')
-        user_input = input("Please enter new weights: ");  
-        new_weights_list = user_input.strip().split()
-        new_weights_json = self.weights_from_list_to_json(new_weights_list)
+        self.display_data_with_prefix('Old weights',print_weight=True)
+        new_weights_str = input("Please enter new weights: ");  
+        new_weights_list = new_weights_str.strip().split()
+        new_weights_json = self.list_to_json(new_weights_list)
         new_weights_json = self.format_weights_value(new_weights_json)
         if self.valid_weights(weights=new_weights_json):
             for test, weight in new_weights_json.items():
-                self.weights[test] = weight
-            self.print_weights('New weights: ')         
+                self.weights[test] = float(weight)
+            self.display_data_with_prefix('New weights',print_weight=True)         
         else:
             print("Invalid input ! Please enter new weights again !")
               
@@ -496,7 +529,7 @@ class ScoreSystem:
             elif user_input == '5': self.show_distribution()
             elif user_input == '6': user_input = input('\n'+"Please enter a score: ");            self.filtering(user_input)
             elif user_input == '7': user_input = input('\n'+"Please enter new student's data: "); self.add_student(user_input)
-            elif user_input == '8': user_input = input('\n'+"Please enter id and new grade: ");   self.update_grade(user_input); 
+            elif user_input == '8': self.update_grade(); 
             elif user_input == '9': self.update_weights(); 
             else : 
                 print("Exit, see you next time.")
@@ -513,16 +546,21 @@ class ScoreSystem:
         """
         with open('input.txt', 'r', encoding='utf-8') as file:
             txt_content = file.read()
-        
         lines = txt_content.split('\n')
-        
         for line in lines:
             data = line.split(' ')
             if(len(data) <= 1) :continue
-            student_id = data[0]
-            student_name = data[1]
-            scores = list(map(float, data[2:]))
-            self.student.update({f"{student_id}" : {"name": student_name, "scores": scores}})
+            student_id, student_name, lab1, lab2, lab3, mid_term, final_exam = data[0], data[1], int(data[2]), int(data[3]), int(data[4]), int(data[5]), int(data[6])
+            self.student[student_id] = {
+                "name": student_name,
+                "scores":{                    
+                    "lab1": lab1,
+                    "lab2": lab2,
+                    "lab3": lab3,
+                    "mid_term": mid_term,
+                    "final_exam": final_exam,
+                } 
+            }
             
         
     def run(self):
