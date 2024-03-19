@@ -36,6 +36,11 @@ class ScoreSystem:
         """
         self.student = {}
         
+        self.filter_student = {
+            'test': '',
+            'datas': []
+        }
+
         self.weights = {
             'lab1': 0.1,
             'lab2': 0.1,
@@ -226,18 +231,95 @@ class ScoreSystem:
     
     def filtering(self):
         """
+        Input a test (lab1, lab2, lab3, mid_term, final_exam) and a score as threshold.
         Display information of students with scores greater than or equal to a certain score.
-        i.e., Provide "score", and display "their information".
         
-        :param :
-        :type :
+        :param: None
+        :type: None
         
-        :return:
-        :rtype:
+        :return: None
+        :rtype: None
         
         Running Example:
+        
+        >>>> object.filtering()
+            Test: lab1
+            Score: 97
+            
+            # Display information of students matching the criteria 
+            ID: 10, Name: Ale, lab1's grade: 98
+            ID: 17, Name: Bil, lab1's grade: 99
+            ID: 23, Name: Kim, lab1's grade: 99
+            ID: 54, Name: Lee, lab1's grade: 97
+        
+        >>>> object.filtering()
+            Test: lab1
+            Score: 100
+            
+            # Display: No students meet the search criteria.
+            No student is qualified for your search !
+        
+        .....
+        
         """
-
+        test = input("\nPlease enter a test (lab1, lab2, lab3, mid_term, final_exam): ")
+        if test in ['lab1','lab2','lab3','mid_term','final_exam']:
+            score = input("\nPlease enter a score: "); 
+            students = self.search_students_with_score_above(subject=test, threshold=float(score))
+            self.filter_student = {'test':test, 'datas': students.copy()}
+            if len(students) == 0:
+                print("\nNo student is qualified for your search !")
+            else:
+                for student in students:
+                    print(student)
+        else:
+            self.filter_student = {'test':'', 'datas': []}
+            print("\nInvalid input ! Please enter a valid test name")
+    
+    def search_students_with_score_above(self, subject, threshold):
+        """
+        Search for students with a score above a specified threshold 
+        in a particular subject.
+        
+        :param subject: The subject to search for ("lab1", "lab2", "lab3", "mid_term", "final_exam").
+        :type subject: str
+        
+        :param threshold: The threshold score.
+        :type threshold: float
+        
+        :return students: A list of strings containing 
+                          ID, Name, and subject score about students matching search criteria.
+        :rtype students: List
+        
+        Running Example:
+        >>>> object.search_students_with_score_above('lab1',97)
+            # Return List
+            students = [
+                'ID: 10, Name: Ale, lab1's grade: 98',
+                'ID: 17, Name: Bil, lab1's grade: 99',
+                'ID: 23, Name: Kim, lab1's grade: 99',
+                'ID: 54, Name: Lee, lab1's grade: 97'
+            ]
+            
+        >>>> object.search_students_with_score_above('lab1',98.5)
+            # Return List
+            students = [
+                'ID: 17, Name: Bil, lab1's grade: 99',
+                'ID: 23, Name: Kim, lab1's grade: 99',
+            ]
+        
+        >>>> object.search_students_with_score_above('lab1',100)
+            # Return List , which is a empty string
+            students = []
+        """
+        students = []
+        for student_id, student_info in self.student.items():
+            name = student_info['name']
+            score = student_info['scores'][subject]
+            if score >= threshold:
+                students.append(f'ID: {student_id}, Name: {name}, {subject}\'s grade: {score}')
+        
+        return students
     
     def add_student(self):
         """
@@ -605,7 +687,7 @@ class ScoreSystem:
             elif user_input == '3': self.show_average()
             elif user_input == '4': self.show_rank()
             elif user_input == '5': self.show_distribution()
-            elif user_input == '6': user_input = input('\n'+"Please enter a score: ");            self.filtering(user_input)
+            elif user_input == '6': self.filtering()
             elif user_input == '7': self.add_student()
             elif user_input == '8': self.update_grade(); 
             elif user_input == '9': self.update_weights(); 
