@@ -63,29 +63,28 @@ class ScoreSystem:
         
         Running Example:
         >>> object.show_score()
-        Please enter student id: 12345
-        Student's scores:
-        +--------------+-------+
-        |    Subject   | Score |
-        +--------------+-------+
-        |     Lab 1    |   90   |
-        |     Lab 2    |   85   |
-        |     Lab 3    |   92   |
-        |   Mid-Term   |   88   |
-        |  Final Exam  |   95   |
-        +--------------+-------+
+            Please enter student id: 12345
+            Student's scores:
+            +--------------+-------+
+            |    Subject   | Score |
+            +--------------+-------+
+            |     Lab 1    |   90   |
+            |     Lab 2    |   85   |
+            |     Lab 3    |   92   |
+            |   Mid-Term   |   88   |
+            |  Final Exam  |   95   |
+            +--------------+-------+
         """
         
         user_input = input("Please enter student id: ")
-        
         student_data = self.student.get(user_input)
+        liist_ = ['lab1', 'lab2', 'lab3', 'mid_term', 'final_exam']
     
         # Check if the student exists
         if student_data:
-            student_score = student_data['scores']
             # Extract individual scores
-            lab1, lab2, lab3, mid_term, final_exam = student_score
-            
+            lab1, lab2, lab3, mid_term, final_exam = [student_data['scores'][liist_[i]] for i in range(5)]
+
             # Print the student's scores in a table format
             print("Student's scores:")
             print("+--------------+-------+")
@@ -140,16 +139,28 @@ class ScoreSystem:
         :rtype: None
         
         Running Example:
+        >>> object.show_grade_letter()
+            Please enter student id: 985002001
+            Student's scores:
+            +--------------+-------+
+            |    Subject   | Score |
+            +--------------+-------+
+            |     Lab 1    |   A+  |
+            |     Lab 2    |   A   |
+            |     Lab 3    |   A+  |
+            |   Mid-Term   |   A-  |
+            |  Final Exam  |   A+  |
+            +--------------+-------+
+        
         """
         
         user_input = input("Please enter student id: ")
         student_data = self.student.get(user_input)
+        liist_ = ['lab1', 'lab2', 'lab3', 'mid_term', 'final_exam']
     
         # Check if the student exists
         if student_data:
-            student_score = student_data['scores']
-            # Extract individual scores
-            lab1, lab2, lab3, mid_term, final_exam = [self.score_to_grad_letter(score) for score in student_score]
+            lab1, lab2, lab3, mid_term, final_exam = [self.score_to_grad_letter(student_data['scores'][liist_[i]]) for i in range(5)]
             
             # Print the student's scores in a table format
             print("Student's scores:")
@@ -170,25 +181,27 @@ class ScoreSystem:
         Display the student's weighted average grade.
         i.e., Provide "ID" and display "their weighted average score".
         
-        :param :
-        :type :
+        :param :None
+        :type :None
         
-        :return:
-        :rtype:
+        :return:None
+        :rtype:None
         
         Running Example:
+        >>> object.show_average()
+            Please enter student id: 985002001
+            Student's average scores: 90.20
         """    
         
         user_input = input("Please enter student id: ")
         student_data = self.student.get(user_input)
-        weights = self.weights.values()
+        mean_score = 0
         # Check if the student exists
         if student_data:
-            student_scores = student_data['scores']     
-            weighted_score = []
-            for student_score, weight in zip(student_scores, weights):
-                weighted_score.append(student_score * weight)
-            mean_score = sum(weighted_score)
+            student_scores = student_data['scores']   
+            
+            for score, weight in zip(student_scores.values(), self.weights.values()):
+                mean_score += score * weight
             print(f"Student's average scores: {mean_score:.2f}")
         else:
             print("Student ID not found.")
@@ -197,16 +210,33 @@ class ScoreSystem:
     def show_rank(self):
         """
         Display the student's ranking (based on weighted average).
-        i.e., Provide "ID" and display "their rank".
+        i.e., Provide "ID" and display "his/her rank".
         
-        :param :
-        :type :
+        :param :None
+        :type :None
         
-        :return:
-        :rtype:
+        :return:None
+        :rtype:None
         
         Running Example:
+        >>> object.show_rank()
+            Please enter student id: 985002001
+            Student's rank: 27
         """
+        user_input = input("Please enter student id: ")
+        student_data = self.student.get(user_input)
+        
+        # Check if the student exists
+        if student_data:
+            student_ranks = {}
+            for student_id, student_info in self.student.items():
+                scores = student_info['scores']
+                rank_score = sum([score * weight for score, weight in zip(scores.values(), self.weights.values())])
+                student_ranks[student_id] = rank_score
+            sorted_ranks = sorted(student_ranks.items(), key=lambda x: x[1], reverse=True)
+            rank = [i for i, (student_id, score) in enumerate(sorted_ranks, start=1) if student_id == user_input][0]
+            print(f"Student's rank: {rank}")
+        
 
     
     def show_distribution(self): 
@@ -219,14 +249,31 @@ class ScoreSystem:
             D (50-59), 
             E (1-49)
         
-        :param :
-        :type :
+        :param :None
+        :type :None
         
-        :return:
-        :rtype:
+        :return:None
+        :rtype:None
         
         Running Example:
+        >>> object.show_distribution()            
+            Grade distribution:
+            A-: 3
+            A+: 27
+            A : 33
         """
+        student_ranks = {}
+        for student_id, student_info in self.student.items():
+            scores = student_info['scores']
+            rank_score = sum([score * weight for score, weight in zip(scores.values(), self.weights.values())])
+            student_ranks[student_id] = rank_score
+        sorted_ranks = sorted(student_ranks.items(), key=lambda x: x[1], reverse=True)
+        grades = [self.score_to_grad_letter(score) for student_id, score in sorted_ranks]
+        grade_counts = {grade: grades.count(grade) for grade in set(grades)}
+        print("Grade distribution:")
+        for grade, count in grade_counts.items():
+            print(f"{grade}: {count}")
+        
 
     
     def filtering(self):
