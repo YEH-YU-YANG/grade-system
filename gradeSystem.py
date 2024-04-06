@@ -141,16 +141,7 @@ class ScoreSystem:
         Running Example:
         >>> object.show_grade_letter()
             Please enter student id: 985002001
-            Student's scores:
-            +--------------+-------+
-            |    Subject   | Score |
-            +--------------+-------+
-            |     Lab 1    |   A+  |
-            |     Lab 2    |   A   |
-            |     Lab 3    |   A+  |
-            |   Mid-Term   |   A-  |
-            |  Final Exam  |   A+  |
-            +--------------+-------+
+            Student's scores: A+
         
         """
         
@@ -160,19 +151,14 @@ class ScoreSystem:
     
         # Check if the student exists
         if student_data:
-            lab1, lab2, lab3, mid_term, final_exam = [self.score_to_grad_letter(student_data['scores'][liist_[i]]) for i in range(5)]
+            student_scores = student_data['scores']   
+            mean_score = 0
+            for score, weight in zip(student_scores.values(), self.weights.values()):
+                mean_score += score * weight
+            grade_letter = self.score_to_grad_letter(mean_score)
             
             # Print the student's scores in a table format
-            print("Student's scores:")
-            print("+--------------+-------+")
-            print("|    Subject   | Score |")
-            print("+--------------+-------+")
-            print(f"|     Lab 1    |   {lab1}  |")
-            print(f"|     Lab 2    |   {lab2}  |")
-            print(f"|     Lab 3    |   {lab3}  |")
-            print(f"|   Mid-Term   |   {mid_term}  |")
-            print(f"|  Final Exam  |   {final_exam}  |")
-            print("+--------------+-------+")
+            print("Student's scores: ", grade_letter)
         else:
             print("Student ID not found.")
 
@@ -236,7 +222,8 @@ class ScoreSystem:
             sorted_ranks = sorted(student_ranks.items(), key=lambda x: x[1], reverse=True)
             rank = [i for i, (student_id, score) in enumerate(sorted_ranks, start=1) if student_id == user_input][0]
             print(f"Student's rank: {rank}")
-        
+        else :
+            print("Student ID not found.")
 
     
     def show_distribution(self): 
@@ -258,9 +245,9 @@ class ScoreSystem:
         Running Example:
         >>> object.show_distribution()            
             Grade distribution:
-            A-: 3
             A+: 27
             A : 33
+            A-: 3
         """
         student_ranks = {}
         for student_id, student_info in self.student.items():
@@ -268,8 +255,9 @@ class ScoreSystem:
             rank_score = sum([score * weight for score, weight in zip(scores.values(), self.weights.values())])
             student_ranks[student_id] = rank_score
         sorted_ranks = sorted(student_ranks.items(), key=lambda x: x[1], reverse=True)
+        
         grades = [self.score_to_grad_letter(score) for student_id, score in sorted_ranks]
-        grade_counts = {grade: grades.count(grade) for grade in set(grades)}
+        grade_counts = {grade: grades.count(grade) for grade in grades}
         print("Grade distribution:")
         for grade, count in grade_counts.items():
             print(f"{grade}: {count}")
@@ -682,7 +670,7 @@ class ScoreSystem:
         """
         print("")
         print("Function Menu")
-        print("1) Show grade ")
+        print("1) Show score ")
         print("2) Show grade letter") 
         print("3) Show average")
         print("4) Show rank")
