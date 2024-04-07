@@ -18,14 +18,17 @@ def run_test(suite, disable_print=False):
     """
     Execute test cases.
 
-    :param suite: unittest test suite.
+    :param suite: A unittest test suite containing the test cases to be executed.
     :type suite: unittest.TestSuite
+    
+    :param disable_print: A boolean flag indicating whether to suppress print outputs during test execution. Default is False.
+    :type disable_print: bool
+    
     :return: None
     :rtype: None
-    
-    Running Example:
-    >>>> run_test(suite)
-    
+
+    Example:
+    >>> run_test(suite)
     """
     # Save the current stdout
     old_stdout = sys.stdout
@@ -41,16 +44,16 @@ def run_test(suite, disable_print=False):
 
 def set_suite():
     """
-    Select the test files to be executed.
-    
-    :return: unittest test suite.
+    Construct a unittest test suite.
+
+    This function searches for test files matching a specific pattern in the specified directory and constructs a test suite from them.
+
+    :return: A unittest test suite containing the test cases discovered from the test files.
     :rtype: unittest.TestSuite
     
     Running Example:
-        test_case_path = "./test_case/"
-        test_case_pattern = "test_*.py"
-        suite = set_suite()
-        run_test(suite)
+    >>> set_suite()
+    # return a unittest.TestSuite with spectif pattern
     """
     
     test_case_path = "./test_case/"

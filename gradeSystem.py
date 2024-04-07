@@ -1,6 +1,10 @@
 from enum import Enum
 
 class Method(Enum):
+    """
+    Enumeration defining different methods available in the grading system.
+    Each method is associated with a unique string identifier.
+    """
     SHOW_SCORE = '1'
     SHOW_GRADE_LETTER = '2'
     SHOW_AVERAGE = '3'
@@ -13,7 +17,15 @@ class Method(Enum):
     EXIT = '10'
     INVALID = '11'
 class ScoreSystem:
-    
+    """
+    A class representing a grading system.
+
+    This class provides functionality for managing student grades, including
+    displaying scores, grade letters, averages, ranks, grade distributions,
+    filtering students based on scores, adding students, updating grades,
+    updating weights, and displaying a menu interface.
+
+    """
     def __init__(self):
         """        
         Constructor for the GradingSystem class.
@@ -25,6 +37,7 @@ class ScoreSystem:
         :rtype: none
         
         Running Example:
+        >>>> score_system = ScoreSystem()
         """
         self.method_call_value = 0
         self.student = {}
@@ -183,7 +196,6 @@ class ScoreSystem:
         else:
             print("Student ID not found.")
 
-        
     def show_rank(self):
         """
         Display the student's ranking (based on weighted average).
@@ -216,7 +228,6 @@ class ScoreSystem:
         else :
             print("Student ID not found.")
 
-    
     def show_distribution(self): 
         """    
         Display the number of students in each grade range (weighted).
@@ -253,8 +264,6 @@ class ScoreSystem:
         for grade, count in grade_counts.items():
             print(f"{grade}: {count}")
         
-
-    
     def filtering(self):
         """
         Input a test (lab1, lab2, lab3, mid_term, final_exam) and a score as threshold.
@@ -461,8 +470,7 @@ class ScoreSystem:
             self.display_data_with_prefix('New grades',print_grades=True,student_id=id)         
         else:
             print("Invalid input ! Please enter new ID again !")
-            
-        
+               
     def display_data_with_prefix(self, prefix_str="", print_weight=False, print_grades=False, print_name=False, print_id=False, student_id=None):
         """
         Print weights or grades with a specified prefix string.
@@ -541,7 +549,7 @@ class ScoreSystem:
         for test, weight in weights.items():
             weights[test] = weight
         total_weight = sum(weights.values())
-        if not total_weight == 1:
+        if not total_weight == 1.0:
             is_valid =  False   
 
         return is_valid
@@ -658,7 +666,8 @@ class ScoreSystem:
         :return: None
         :rtype: None
 
-        Running Example: None
+        Example
+        >>>> ScoreSystem.show_menu()
         """
         print("")
         print("Function Menu")
@@ -721,7 +730,6 @@ class ScoreSystem:
             elif user_input == '10': print("\nExit, see you next time."); break
             else:                    self.method_call_value = Method.INVALID.value         ; print("\nInvalid input ! Please enter a command between 1 ~ 10")
                 
-    
     def load_input_data(self):
         """
         Function to load input data required for the grading system.
@@ -729,6 +737,9 @@ class ScoreSystem:
 
         :param : None
         :returns : None
+        
+        Example:
+        >>>> ScoreSystem.load_input_data()
         """
         with open('input.txt', 'r', encoding='utf-8') as file:
             txt_content = file.read()
@@ -748,13 +759,15 @@ class ScoreSystem:
                 } 
             }
             
-        
     def run(self):
         """
         Main function to run the grading system.
 
         :param : None
         :returns : None
+        
+        Example:
+        >>>> ScoreSystem.run()
         """
         
         self.load_input_data()
