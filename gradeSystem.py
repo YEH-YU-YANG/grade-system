@@ -1,46 +1,37 @@
-"""
-Docstring for Every Method:
+from enum import Enum
 
-1.  Description: 說明此 function 的功能
-
-2.  :param : 說明各個 parameters 的作用，一個 function 可寫多個 @param
-    :type  : 說明各個 parameters 的型態
-
-3.  :return : 簡述 return value 的作用
-    :rtype  : 說明各 return parameters 的 type
-
-4.  Running Example : 舉例說明如何使用此 function
-    
-    Running Example:
-    >>> find_maximum([3, 7, 2, 9, 5])
-    9
-    
-"""
-
-import statistics as stat
-import numpy as np
-
+class Method(Enum):
+    SHOW_SCORE = '1'
+    SHOW_GRADE_LETTER = '2'
+    SHOW_AVERAGE = '3'
+    SHOW_RANK = '4'
+    SHOW_DISTRIBUTION = '5'
+    FILTERING = '6'
+    ADD_STUDENT = '7'
+    UPDATE_GRADE = '8'
+    UPDATE_WEIGHTS = '9'
+    EXIT = '10'
+    INVALID = '11'
 class ScoreSystem:
     
     def __init__(self):
         """        
         Constructor for the GradingSystem class.
         
-        :param :
-        :type :
+        :param : nonoe
+        :type : none
         
-        :return:
-        :rtype:
+        :return: none
+        :rtype: none
         
         Running Example:
         """
+        self.method_call_value = 0
         self.student = {}
-        
         self.filter_student = {
             'test': '',
             'datas': []
         }
-
         self.weights = {
             'lab1': 0.1,
             'lab2': 0.1,
@@ -603,10 +594,11 @@ class ScoreSystem:
         :rtype weights_json: dict
         """
         json = {}
-        for i in range(0, len(list), 2):
-            test = list[i]
-            value = list[i+1]
-            json[test] = value
+        if len(list)%2 == 0:
+            for i in range(0, len(list), 2):
+                test = list[i]
+                value = list[i+1]
+                json[test] = value
         return json
     
     def update_weights(self):
@@ -716,19 +708,18 @@ class ScoreSystem:
         print("Welcome to the Grade System.") 
         while True:
             self.show_menu()
-            user_input = input("Please enter a command (1-10) to begin: ")
-            if   user_input == '1': self.show_score()
-            elif user_input == '2': self.show_grade_letter()
-            elif user_input == '3': self.show_average()
-            elif user_input == '4': self.show_rank()
-            elif user_input == '5': self.show_distribution()
-            elif user_input == '6': self.filtering()
-            elif user_input == '7': self.add_student()
-            elif user_input == '8': self.update_grade(); 
-            elif user_input == '9': self.update_weights(); 
-            else : 
-                print("Exit, see you next time.")
-                break
+            user_input = input("Please enter a command (1 ~ 10) to begin: ")
+            if   user_input == '1' : self.method_call_value = Method.SHOW_SCORE.value        ; self.show_score()
+            elif user_input == '2' : self.method_call_value = Method.SHOW_GRADE_LETTER.value ; self.show_grade_letter()
+            elif user_input == '3' : self.method_call_value = Method.SHOW_AVERAGE.value      ; self.show_average()
+            elif user_input == '4' : self.method_call_value = Method.SHOW_RANK.value         ; self.show_rank()
+            elif user_input == '5' : self.method_call_value = Method.SHOW_DISTRIBUTION.value ; self.show_distribution()
+            elif user_input == '6' : self.method_call_value = Method.FILTERING.value         ; self.filtering()
+            elif user_input == '7' : self.method_call_value = Method.ADD_STUDENT.value       ; self.add_student()
+            elif user_input == '8' : self.method_call_value = Method.UPDATE_GRADE.value      ; self.update_grade()
+            elif user_input == '9' : self.method_call_value = Method.UPDATE_WEIGHTS.value    ; self.update_weights()
+            elif user_input == '10': print("\nExit, see you next time."); break
+            else:                    self.method_call_value = Method.INVALID.value         ; print("\nInvalid input ! Please enter a command between 1 ~ 10")
                 
     
     def load_input_data(self):

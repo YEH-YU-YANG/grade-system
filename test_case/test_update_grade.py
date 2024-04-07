@@ -101,7 +101,7 @@ class TestUpdateGrade(unittest.TestCase):
            { 'id': ''         , 'input': 'final_exam 100  mid_term 100 lab3 100 lab2 100 lab1 100' , 'expected_grades': {} },  
            { 'id': '  '       , 'input': 'final_exam 100  mid_term 100 lab3 100 lab2 100 lab1 100' , 'expected_grades': {} },  
            { 'id': '\t\n  '   , 'input': 'final_exam 100  mid_term 100 lab3 100 lab2 100 lab1 100' , 'expected_grades': {} },  
-           { 'id': '955002056', 'input': 'alskjalwwjriqq as;da;koe pd as;ka;' , 'expected_grades': { 'lab1': 88 , 'lab2': 92 , 'lab3': 88 , 'mid_term': 98 , 'final_exam': 91  } }
+           { 'id': '955002056', 'input': 'alskjalwwjriqq as;da;koe pd as;ka;'                      , 'expected_grades': { 'lab1': 88 , 'lab2': 92 , 'lab3': 88 , 'mid_term': 98 , 'final_exam': 91  } }
         ]
         
         for test_case in test_cases:
