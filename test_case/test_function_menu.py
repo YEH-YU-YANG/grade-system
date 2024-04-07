@@ -55,10 +55,10 @@ class TestFunctionMenu(unittest.TestCase):
             For each test case, result of 'function menu & exit' method should match the expected result.
         """
         test_cases = [
-            # { 'input_value': ['1' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_SCORE.value        },
-            # { 'input_value': ['2' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_GRADE_LETTER.value },
-            # { 'input_value': ['3' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_AVERAGE.value      },
-            # { 'input_value': ['4' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_RANK.value         },
+            { 'input_value': ['1' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_SCORE.value        },
+            { 'input_value': ['2' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_GRADE_LETTER.value },
+            { 'input_value': ['3' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_AVERAGE.value      },
+            { 'input_value': ['4' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_RANK.value         },
             # { 'input_value': ['5' , 'None'     , Method.EXIT.value], 'expected_result': Method.SHOW_DISTRIBUTION.value },
             { 'input_value': ['6' , 'None'     , Method.EXIT.value], 'expected_result': Method.FILTERING.value         },
             { 'input_value': ['7' , '955002056', Method.EXIT.value], 'expected_result': Method.ADD_STUDENT.value       },
@@ -74,23 +74,3 @@ class TestFunctionMenu(unittest.TestCase):
                 self.assertEqual(self.system.method_call_value, expected_result)
 
                 
-    # @patch('builtins.input')
-    # def test_invalid_input(self, mock_input):
-    #     """
-    #     Test description:
-    #         Verifie the behavior of 'function menu & exit' method with various invalid input formats.
-        
-    #     Test cases:
-    #         Each test case includes test, and expected_result 
-    #         representing  the test name (lab1, lab2 ...), and the correct filtered student data.
-
-    #     Expected behavior:
-    #         For each test case, result of 'function menu & exit' method should match the expected result.
-    #     """
-        
-    #     test_cases = [
-
-    #     ]
-        
-    #     for test_case in test_cases:
-    #         test, expected_result = test_case.values()
